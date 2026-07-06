@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+﻿<﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Store</title>
+    <title>Магазин</title>
 
     <link href="//Microsoft.WinJS.2.0/css/ui-light.css" rel="stylesheet" />
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
@@ -168,8 +168,8 @@
     <div id="topBarContainer"></div>
 
     <header class="header-area win8-anim" style="animation-delay: 0s;">
-        <a href="default.html"><button class="win-backbutton" aria-label="Back"></button></a>
-        <h1 id="appTitle" class="page-title">All Apps</h1>
+        <a href="default.html"><button class="win-backbutton" aria-label="Назад"></button></a>
+        <h1 id="appTitle" class="page-title">Все приложения</h1>
         <span id="appCountDisplay" class="app-count"></span>
     </header>
 
@@ -178,6 +178,9 @@
     <script type="text/javascript">
         (function () {
             "use strict";
+
+            // Язык по умолчанию — русский
+            var lang = "ru";
 
             var pageTranslations = {
                 "en": { allApps: "All Apps", results: "Results for ", app: " app", apps: " apps", free: "Free" },
@@ -190,7 +193,6 @@
                 "ro": { allApps: "Toate aplicațiile", results: "Rezultate pentru ", app: " aplicație", apps: " aplicații", free: "Gratuit" }
             };
 
-            var lang = localStorage.getItem("ws_language") || "en";
             var t = pageTranslations[lang] || pageTranslations["en"];
 
             function applyTheme(theme) {
@@ -316,7 +318,7 @@
 
                                 item.innerHTML = '<div class="app-tile"><img src="' + img + '"></div>' +
                                                   '<div class="app-name">' + name + '</div>' +
-                                                  '<div class="tile-text-price">' + (t.free || "Free") + '</div>' +
+                                                  '<div class="tile-text-price">' + (t.free || "Бесплатно") + '</div>' +
                                                   '<div class="tile-stars">' + starsFromRating(mainStars) +
                                                   '<span class="rating-count-small">' + ratingsCount + '</span></div>' +
                                                   '<div class="tile-category">' + category + '</div>';
