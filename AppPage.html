@@ -2,7 +2,7 @@
 <html xmlns="http://w3.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Visualizador de Aplicación - CodornizCorp</title>
+    <title>Просмотр приложения - CodornizCorp</title>
     <link href="//Microsoft.WinJS.2.0/css/ui-dark.css" rel="stylesheet" />
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
     <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
@@ -33,162 +33,203 @@
     <div id="topbar">
         <img src="images/codorniz.png" class="topbar-codorniz-logo" onclick="window.location.href='default.html'">
         <div class="store-brand" onclick="window.location.href='default.html'">CodornizStore</div>
-        <div class="page-title" onclick="window.location.href='AllApps.html'">Aplicaciones</div>
-        <div class="page-title" onclick="window.location.href='ChartsPage.html'">Tendencias</div>
-        <div class="page-title" onclick="window.location.href='AccountPage.html'">Mi Cuenta</div>
+        <div class="page-title" onclick="window.location.href='AllApps.html'">Приложения</div>
+        <div class="page-title" onclick="window.location.href='ChartsPage.html'">Тренды</div>
+        <div class="page-title" onclick="window.location.href='AccountPage.html'">Моя учетная запись</div>
     </div>
 
     <div id="view-wrapper">
         <div class="download-sidebar">
             <div id="view-app-icon" class="download-icon"></div>
             <div class="metro-progress-container" id="view-progress-wrapper"><div class="metro-progress-bar" id="view-progress-bar"></div></div>
-            <button class="btn-install" id="view-download-action">Instalar</button>
-            <button class="btn-back" onclick="window.location.href='AllApps.html'">Volver al Catálogo</button>
+            <button class="btn-install" id="view-download-action">Установить</button>
+            <button class="btn-back" onclick="window.location.href='AllApps.html'">Вернуться в каталог</button>
         </div>
         <div class="download-details">
-            <h1 id="view-app-title">Cargando...</h1>
+            <h1 id="view-app-title">Загрузка...</h1>
             <div class="publisher" id="view-app-pub">CodornizCorp</div>
             <div id="view-app-stars" style="color:#ffb900; margin:10px 0; font-size: 18px;">★★★★★</div>
-            <div class="description" id="view-app-desc">La codorniz anda buscando la info...</div>
+            <div class="description" id="view-app-desc">Куропатка ищет информацию...</div>
             <iframe id="view-comments-frame" class="comments-container" src="AppComments.html"></iframe>
         </div>
     </div>
     <script>
+        // Определяем переменные для отображения
+        var appSeleccionada = "Angry Birds Space"; // По умолчанию, будет переопределено из URL
+        var urlDescarga = "";
+        var pubBox = document.getElementById('view-app-pub');
+        var descBox = document.getElementById('view-app-desc');
+        var iconBox = document.getElementById('view-app-icon');
+        var titleBox = document.getElementById('view-app-title');
+
+        // Получаем параметр title из URL
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        var titleParam = urlParams.get('title');
+        if (titleParam) {
+            appSeleccionada = decodeURIComponent(titleParam);
+            if (titleBox) titleBox.innerText = appSeleccionada;
+        }
+
+        // Каталог приложений с русскими описаниями
         if (appSeleccionada === 'Angry Birds Space') {
             if (pubBox) pubBox.innerText = 'Rovio Entertainment';
-            if (descBox) descBox.innerText = 'Los pájaros espaciales se trasladan al espacio exterior. Usa la atracción de los astros para realizar tiros parabólicos orbitales en gravedad cero con total fluidez nativa horizontal de deidad.';
+            if (descBox) descBox.innerText = 'Культовые птицы Angry Birds отправляются в космос, используйте рогатку и сбивайте свиней.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/angrybirds.png')";
             urlDescarga = 'https://drive.google.com/file/d/1oStrLgIrknt95EcIkLwY_YiZbMsFHIUQ/view?usp=drive_link';
         } 
         else if (appSeleccionada === 'Fruit Ninja') {
             if (pubBox) pubBox.innerText = 'Halfbrick Studios';
-            if (descBox) descBox.innerText = 'El clásico juego de rebanar sandías, manzanas y plátanos evitando las bombas con total fluidez nativa horizontal, soporte de gestos multi-touch y combos de puntuación extrema.';
+            if (descBox) descBox.innerText = 'Классическая игра по нарезке арбузов, яблок и бананов, избегая бомб. Поддержка мультитач-жестов и экстремальных комбо-очков.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/fruitninja.png')";
             urlDescarga = 'https://drive.google.com/file/d/1q5qowDPr-Htm12JrrNK418Lzu_lQJNOL/view?usp=drive_link';
         }
         else if (appSeleccionada === 'ProdigyMath') {
             if (pubBox) pubBox.innerText = 'Prodigy Math Team';
-            if (descBox) descBox.innerText = 'Plataforma educativa de matemáticas adaptada a un entorno de fantasía y rol. Resuelve desafíos aritméticos y sube de nivel de forma estable.';
+            if (descBox) descBox.innerText = 'Образовательная платформа по математике в фэнтезийном RPG-стиле. Решайте арифметические задачи и повышайте уровень.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/ProdigyMath_1.17.0.0_AnyCPU_Debug.png')";
             urlDescarga = 'https://drive.google.com/file/d/1Bm5y9laQEVD2EzH3ObBj5XBTEPVC6mo_/view?usp=drive_link';
         }
         else if (appSeleccionada === 'newsXpresso Metro') {
             if (pubBox) pubBox.innerText = 'newsXpresso';
-            if (descBox) descBox.innerText = 'Tu revista digital personal adaptada con diseño de lectura horizontal de deidad, organización inteligente de categorías y feeds de noticias automatizados.';
+            if (descBox) descBox.innerText = 'Ваш персональный цифровой журнал с горизонтальным дизайном для удобного чтения, интеллектуальной сортировкой категорий и автоматическими новостными лентами.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/newsxpresso.png')";
             urlDescarga = 'https://drive.google.com/file/d/1Zp11rRSB3clkymzKDPb2bKkCPnL4M_dx/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Opentracks') {
             if (pubBox) pubBox.innerText = 'Opentracks Studio';
-            if (descBox) descBox.innerText = 'Reproductor de audio libre de código abierto optimizado con ecualización de frecuencias nativa y soporte para la indexación rápida de tus archivos de música locales.';
+            if (descBox) descBox.innerText = 'Свободный аудиоплеер с открытым исходным кодом, оптимизированный с нативной эквализацией частот и быстрой индексацией локальных музыкальных файлов.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/mp3hubesopentracks.png')";
             urlDescarga = 'https://drive.google.com/file/d/1Cond9OlNdjPee0RdtALNhasntS8JZKXA/view?usp=drive_link';
         }
         else if (appSeleccionada === 'wpapp') {
             if (pubBox) pubBox.innerText = 'wpapp Team';
-            if (descBox) descBox.innerText = 'Una aplicación de windows phone preservada de forma legítima para revivir la sincronización y el despliegue de mosaicos del ecosistema móvil clásico.';
+            if (descBox) descBox.innerText = 'Приложение Windows Phone, сохранённое для возрождения синхронизации и развёртывания плиток классической мобильной экосистемы.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/wpapp.png')";
             urlDescarga = 'https://drive.google.com/file/d/1rDJgRwSaZ1LdJg8sM2nrZlyxAIM1CCE3/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Evernote') {
             if (pubBox) pubBox.innerText = 'Evernote Corp';
-            if (descBox) descBox.innerText = 'Toma notas, organiza tus ideas, archiva tus documentos importantes y sincroniza tus libretas de apuntes de forma fluida con el diseño de rejilla Metro nativo.';
+            if (descBox) descBox.innerText = 'Записывайте заметки, организуйте идеи, архивируйте важные документы и синхронизируйте свои блокноты с нативным Metro-интерфейсом.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/evernote.png')";
             urlDescarga = 'https://drive.google.com/file/d/1D6TPEhleJFXa9n9JfnQ04vt2A-j2gLYv/view?usp=drive_link';
         }
         else if (appSeleccionada === 'mytube') {
             if (pubBox) pubBox.innerText = 'Ryken Studio';
-            if (descBox) descBox.innerText = 'El mejor cliente de videos de terceros para la interfaz Metro con soporte de reproducción de audio en segundo plano y descargas a tu disco duro local.';
+            if (descBox) descBox.innerText = 'Лучший сторонний видеоклиент для интерфейса Metro с поддержкой фонового воспроизведения аудио и загрузкой на локальный диск.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/mytube.png')";
             urlDescarga = 'https://drive.google.com/file/d/1EthmDqW2kcgDsaZ7EpPSdiB8Rv1tNTWC/view?usp=drive_link';
         }
         else if (appSeleccionada === 'DrayMusic') {
             if (pubBox) pubBox.innerText = 'DrayMusic Studio';
-            if (descBox) descBox.innerText = 'Reproductor y gestor de listas musicales nativo con interfaz fluida adaptativa estilo Metro para la indexación rápida de tu catálogo de audio local.';
+            if (descBox) descBox.innerText = 'Нативный аудиоплеер и менеджер плейлистов с адаптивным Metro-интерфейсом для быстрой индексации вашей локальной музыкальной коллекции.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/1773704616_DrayMusic_1.0.0.0_AnyCPU.png')";
             urlDescarga = 'https://drive.google.com/file/d/1DJOGR0OaH9jP0jaGTQ8Y0VvgTfbj_Dvz/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Netflix') {
             if (pubBox) pubBox.innerText = 'Netflix Inc';
-            if (descBox) descBox.innerText = 'Disfruta de películas, series y documentales vía streaming directo en tu pantalla completa con interfaz Metro optimizada para la reproducción de alta definición.';
+            if (descBox) descBox.innerText = 'Наслаждайтесь фильмами, сериалами и документальными фильмами через стриминг на полный экран с оптимизированным Metro-интерфейсом для HD-воспроизведения.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/netflix.png')";
             urlDescarga = 'https://drive.google.com/file/d/1895kZuRaM7CmUmNfuvnwwzTTTIAoIcb6/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Rowi') {
             if (pubBox) pubBox.innerText = 'Hidden Pineapple';
-            if (descBox) descBox.innerText = 'Cliente de Twitter panorámico estilo Metro diseñado para la lectura cómoda de tus feeds de noticias y timelines directamente en una grilla horizontal continua.';
+            if (descBox) descBox.innerText = 'Панорамный Twitter-клиент в стиле Metro для удобного чтения лент новостей и временных линий в непрерывной горизонтальной сетке.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/rowi-150x150.png')";
             urlDescarga = 'https://drive.google.com/file/d/1-1leuVqfzwpCaIf7wDbCpNqyZ780Ot1o/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Nokia AppSocial') {
             if (pubBox) pubBox.innerText = 'Nokia Corporation';
-            if (descBox) descBox.innerText = 'Explora, descubre y descarga las aplicaciones recomendadas y curadas por la comunidad de Nokia en una interfaz fluida nativa de herencia clásica.';
+            if (descBox) descBox.innerText = 'Изучайте, открывайте и загружайте приложения, рекомендованные и курируемые сообществом Nokia, в нативном классическом интерфейсе.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/nokiaappsocial.png')";
-            urlDescarga = 'https://drive.google.com/file/d/1LIDK37Jsnz8hnbelIWC-aWzAtXB3vMNB/view?usp=drive_link;
+            urlDescarga = 'https://drive.google.com/file/d/1LIDK37Jsnz8hnbelIWC-aWzAtXB3vMNB/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Koode Reader') {
             if (pubBox) pubBox.innerText = 'Koode Team';
-            if (descBox) descBox.innerText = 'Lector avanzado de libros electrónicos con soporte multiplataforma de lectura para archivos EPUB, PDF y creación nativa de notas de estudio.';
+            if (descBox) descBox.innerText = 'Продвинутая читалка электронных книг с кросс-платформенной поддержкой EPUB, PDF и созданием заметок для учёбы.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/koodereader.png')";
             urlDescarga = 'https://drive.google.com/file/d/1e8QpSamGGLevpQBODUvPTNPIKbMNb3Fw/view?usp=drive_link';
         }
         else if (appSeleccionada === 'El Tenedor') {
             if (pubBox) pubBox.innerText = 'La Fourchette';
-            if (descBox) descBox.innerText = 'Guía gastronómica oficial de La Fourchette. Encuentra recetas de cocina, opiniones de chefs calificados y gestiona tus reservas de mesas en línea.';
+            if (descBox) descBox.innerText = 'Официальный гастрономический гид La Fourchette. Находите кулинарные рецепты, отзывы шеф-поваров и управляйте бронированием столиков онлайн.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/eltenedor.png')";
             urlDescarga = 'https://drive.google.com/file/d/1aHYx97Ug17RF8cNmBcderkRnA10zGzhA/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Rayman Jungle Run') {
             if (pubBox) pubBox.innerText = 'Ubisoft';
-            if (descBox) descBox.innerText = '¡El legendario héroe de las plataformas llega a la interfaz Metro de Windows con un motor físico fluido, escenarios rápidos y soporte de deidad!';
+            if (descBox) descBox.innerText = 'Легендарный герой платформеров прибывает в Metro-интерфейс Windows с физическим движком, быстрыми уровнями и поддержкой геймпада!';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/raymanjunglerun.png')";
             urlDescarga = 'https://drive.google.com/file/d/1mHxYD_VFBC7lI78mGY_BuHtYd7P7nzyh/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Cut The Rope') {
             if (pubBox) pubBox.innerText = 'ZeptoLab UK';
-            if (descBox) descBox.innerText = 'Corta las cuerdas correctas utilizando las leyes de la física para alimentar al entrañable monstruito Om Nom con sus dulces y caramelos favoritos.';
+            if (descBox) descBox.innerText = 'Режьте верёвки по законам физики, чтобы кормить милого монстрика Ом Нома его любимыми сладостями.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/CutTheRope.png')";
             urlDescarga = 'https://drive.google.com/file/d/1IeQRrxmj0jrgTDSGSaEjN2tCmd6o1Ky1/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Xurxo News') {
             if (pubBox) pubBox.innerText = 'XunxoCorp';
-            if (descBox) descBox.innerText = 'Lector de noticias RSS independiente con soporte de feeds locales estructurados libres de cualquier tipo de gatekeep para una lectura veloz.';
+            if (descBox) descBox.innerText = 'Независимая RSS-читалка новостей с поддержкой локальных структурированных лент без цензуры для быстрого чтения.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/Xuxo.png')";
             urlDescarga = 'https://drive.google.com/file/d/1000ZWnzxWE-NCzKp87TQ_43xXmkW2qKz/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Fresh Paint') {
             if (pubBox) pubBox.innerText = 'Microsoft Studios';
-            if (descBox) descBox.innerText = 'Lienzo de pintura digital con simulación realista de óleos, acuarelas y mezcla física de pinceles en tiempo real directo en tu pantalla táctil panorámica.';
+            if (descBox) descBox.innerText = 'Цифровой холст с реалистичной симуляцией масла, акварели и физического смешения кистей в реальном времени на сенсорном экране.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/freshpaint.png')";
             urlDescarga = 'https://drive.google.com/file/d/1easaK47p8H1vAXQOvKWSSQkfGNS0pOfq/view?usp=drive_link';
         }
         else if (appSeleccionada === 'RecipeKeeper') {
             if (pubBox) pubBox.innerText = 'Recipe Keeper Team';
-            if (descBox) descBox.innerText = 'Organiza tus recetas familiares favoritas, planifica tus comidas de la semana y genera listas de compras de forma automática en mosaicos interactivos.';
+            if (descBox) descBox.innerText = 'Организуйте любимые семейные рецепты, планируйте приёмы пищи и создавайте списки покупок в интерактивных плитках.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/recipekeeper.png')";
             urlDescarga = 'https://drive.google.com/file/d/1n6jz5gI76eR8Pf9aWblZwtMqaM908mN2/view?usp=drive_link';
         }
         else if (appSeleccionada === 'Adobe Reader') {
             if (pubBox) pubBox.innerText = 'Adobe Systems';
-            if (descBox) descBox.innerText = 'El visor de documentos PDF oficial de Adobe optimizado con interfaz táctil fluida, herramientas de zoom simétricas y opción de lectura continua.';
+            if (descBox) descBox.innerText = 'Официальная читалка PDF от Adobe с оптимизированным сенсорным интерфейсом, инструментами масштабирования и режимом непрерывного чтения.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/metro_reader_small_logo.targetsize-256.png')";
             urlDescarga = 'https://drive.google.com/file/d/148Md224s8Jh_wHOFTihllvDtgyX1QOuD/view?usp=drive_link';
         }
         else if (appSeleccionada === 'InsiderHub') {
             if (pubBox) pubBox.innerText = 'Microsoft Insider';
-            if (descBox) descBox.innerText = 'Accede a las últimas compilaciones, desafíos técnicos de desarrollo y foros de retroalimentación de la comunidad Insider oficial del sistema operativo.';
+            if (descBox) descBox.innerText = 'Получайте доступ к последним сборкам, техническим задачам и форумам обратной связи официального сообщества Insider.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/insiderhub.png')";
             urlDescarga = 'https://drive.google.com/file/d/1oZhHFJoZtujtljIVt2GwVUmJn5SWFufr/view?usp=drive_link';
         }
         else if (appSeleccionada === 'WPCentral') {
             if (pubBox) pubBox.innerText = 'WPCentral Team';
-            if (descBox) descBox.innerText = 'Mantente al día con las noticias, análisis detallados de software, tutoriales y coberturas exclusivas de todo el ecosistema de Windows clásico.';
+            if (descBox) descBox.innerText = 'Будьте в курсе новостей, глубоких обзоров, учебных пособий и эксклюзивных материалов о всей классической экосистеме Windows.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/WPAPPCENTRAL.png')";
             urlDescarga = 'https://drive.google.com/file/d/1JnoKGiIaxYuFm9dn428G0ELkYOJSxxPb/view?usp=drive_link';
         }
         else {
             if (pubBox) pubBox.innerText = 'CodornizCorp';
-            if (descBox) descBox.innerText = 'La codorniz no ha escrito una descripcion aun.';
+            if (descBox) descBox.innerText = 'Куропатка ещё не написала описание.';
             if (iconBox) iconBox.style.backgroundImage = "url('images/codorniz.png')";
             urlDescarga = "";
         }
+
+        // Обработчик кнопки установки (простая навигация по ссылке)
+        var btn = document.getElementById('view-download-action');
+        if (btn) {
+            btn.onclick = function() {
+                if (urlDescarga) {
+                    window.location.href = "ms-appinstaller:?source=" + encodeURIComponent(urlDescarga);
+                } else {
+                    alert("Приложение на обслуживании.");
+                }
+            };
+        }
+
+        // Анимация входа
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                var wrapper = document.getElementById('view-wrapper');
+                if (wrapper) wrapper.classList.add('metro-activa');
+            }, 50);
+        });
+    </script>
+</body>
+</html>
