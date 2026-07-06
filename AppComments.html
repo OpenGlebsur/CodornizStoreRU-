@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Store</title>
+    <title>Магазин</title>
 
     <link href="//Microsoft.WinJS.2.0/css/ui-light.css" rel="stylesheet" />
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
@@ -235,9 +235,9 @@
     <div id="topBarContainer"></div>
     <div class="page-container win8-anim">
         <div class="header-section">
-            <button id="btnBack"<button class="win-backbutton" aria-label="Back"></button></a>
-            <h1 id="appTitle">Ratings and reviews</h1>
-            <span id="reviewCountHeader" class="review-count-header">0 reviews</span>
+            <button id="btnBack"<button class="win-backbutton" aria-label="Назад"></button></a>
+            <h1 id="appTitle">Рейтинги и отзывы</h1>
+            <span id="reviewCountHeader" class="review-count-header">0 отзывов</span>
         </div>
         <div class="main-layout">
 
@@ -247,7 +247,7 @@
                 <div id="ratingNumberBig" class="big-rating">4.3</div>
                 <div id="mainStars" class="stars-large">★★★★★</div>
 
-                <div id="avgRatingText" style="color: black; margin-bottom: 30px;">average rating</div>
+                <div id="avgRatingText" style="color: black; margin-bottom: 30px;">средняя оценка</div>
 
                 <div class="rating-bar-table">
                 </div>
@@ -256,13 +256,13 @@
             <div class="right-content">
                 <div id="reviewsList" class="reviews-container"></div>
                 <div class="write-section">
-                    <h2 id="rateAppTitle">Rate this app</h2>
+                    <h2 id="rateAppTitle">Оценить это приложение</h2>
                     <div class="star-input" id="starRating">
                         <span id="s1">★</span><span id="s2">★</span><span id="s3">★</span><span id="s4">★</span><span id="s5">★</span>
                     </div>
-                    <input type="text" id="newTitle" placeholder="Title of your review">
-                    <textarea id="newBody" rows="4" placeholder=" What did you think of this app?"></textarea>
-                    <button id="submitReview">Submit</button>
+                    <input type="text" id="newTitle" placeholder="Заголовок вашего отзыва">
+                    <textarea id="newBody" rows="4" placeholder=" Что вы думаете об этом приложении?"></textarea>
+                    <button id="submitReview">Отправить</button>
                 </div>
             </div>
         </div>
@@ -286,6 +286,9 @@
                 return -1;
               };
             }
+
+            // Язык по умолчанию — русский
+            var lang = "ru";
 
             var pageTranslations = {
                 "en": {
@@ -339,7 +342,6 @@
 
             };
 
-            var lang = localStorage.getItem("ws_language") || "en";
             var t = pageTranslations[lang] || pageTranslations["en"];
 
             function applyPageTranslations() {
@@ -376,7 +378,7 @@
             var REVIEWS_ENDPOINT = "https://reworkw8.github.io/RwStoreMasterServer/data/apps/";
 
             var selectedStars = 5;
-            var appTitle = "App";
+            var appTitle = "Приложение";
 
             var query = window.location.search.substring(1).split("&");
             for (var i = 0; i < query.length; i++) {
