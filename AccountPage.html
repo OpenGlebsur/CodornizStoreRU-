@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html xmlns="http://w3.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Mi Cuenta Microsoft - CodornizStore</title>
+    <title>Моя учетная запись Microsoft - CodornizStore</title>
     <link href="//Microsoft.WinJS.2.0/css/ui-dark.css" rel="stylesheet" />
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
     <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
@@ -28,24 +28,24 @@
     <div id="topbar">
         <img src="images/codorniz.png" class="topbar-codorniz-logo" onclick="window.location.href='default.html'">
         <div class="store-brand" onclick="window.location.href='default.html'">CodornizStore</div>
-        <div class="page-title" onclick="window.location.href='AllApps.html'">Aplicaciones</div>
-        <div class="page-title" onclick="window.location.href='ChartsPage.html'">Tendencias</div>
-        <div class="page-title active-title" onclick="window.location.href='AccountPage.html'">Mi Cuenta</div>
+        <div class="page-title" onclick="window.location.href='AllApps.html'">Приложения</div>
+        <div class="page-title" onclick="window.location.href='ChartsPage.html'">Тренды</div>
+        <div class="page-title active-title" onclick="window.location.href='AccountPage.html'">Моя учетная запись</div>
     </div>
 
     <div id="content">
-        <h1 class="hub-title">Configuración de la cuenta</h1>
+        <h1 class="hub-title">Настройки учетной записи</h1>
         
-        <!-- PANEL DE ADAPTACIÓN AUTOMÁTICA: Las etiquetas cambian solas según el Windows del usuario -->
+        <!-- ПАНЕЛЬ АВТОМАТИЧЕСКОЙ АДАПТАЦИИ: метки меняются в зависимости от Windows пользователя -->
         <div class="profile-container">
             <div class="avatar-box" id="user-initial">U</div>
             <div class="profile-info">
-                <h2 id="user-type-label">Cargando Cuenta...</h2>
-                <p><strong>Nombre de perfil:</strong> <span id="user-display-name">Buscando nombre...</span></p>
-                <p><strong>Correo asociado:</strong> <span id="user-email-address">Iniciando sesión...</span></p>
-                <p><strong>Ecosistema de Red:</strong> CodornizCorp Hibrid Server</p>
-                <p><strong>Estado del Servidor:</strong> Sincronizado vía GitHub CDN</p>
-                <div class="tag-badge" id="user-tier-badge">Suscriptor Store</div>
+                <h2 id="user-type-label">Загрузка учетной записи...</h2>
+                <p><strong>Имя профиля:</strong> <span id="user-display-name">Поиск имени...</span></p>
+                <p><strong>Связанная электронная почта:</strong> <span id="user-email-address">Вход в систему...</span></p>
+                <p><strong>Сетевая экосистема:</strong> Гибридный сервер CodornizCorp</p>
+                <p><strong>Состояние сервера:</strong> Синхронизировано через GitHub CDN</p>
+                <div class="tag-badge" id="user-tier-badge">Подписчик магазина</div>
             </div>
         </div>
     </div>
@@ -57,50 +57,50 @@
             var inicialBox = document.getElementById("user-initial");
             var badgeBox = document.getElementById("user-tier-badge");
 
-            /* INYECTOR APIS NATIVAS WINRT: Chupa los datos reales del usuario logueado en Windows 10 */
+            /* ИНЪЕКТОР NATIVE WINRT API: получает реальные данные вошедшего пользователя в Windows 10 */
             if (typeof Windows !== 'undefined' && Windows.System && Windows.System.UserProfile) {
                 try {
                     var userProfile = Windows.System.UserProfile;
                     
-                    // Extrae el nombre para mostrar de Windows 10
+                    // Извлекает отображаемое имя из Windows 10
                     userProfile.getDisplayNameAsync().then(function (name) {
                         if (name) {
                             nombreBox.innerText = name;
                             inicialBox.innerText = name.charAt(0).toUpperCase();
                         } else {
-                            nombreBox.innerText = "Usuario de Windows 10";
+                            nombreBox.innerText = "Пользователь Windows 10";
                         }
                     });
 
-                    // Extrae el correo principal de la cuenta Microsoft vinculada
+                    // Извлекает основной email связанной учетной записи Microsoft
                     userProfile.getDomainNameAsync().then(function (domain) {
                         if (domain) {
                             emailBox.innerText = domain;
                         } else {
-                            emailBox.innerText = "Cuenta local de Windows";
+                            emailBox.innerText = "Локальная учетная запись Windows";
                         }
                     });
 
-                    labelTipo.innerText = "Cuenta de Microsoft Activa";
-                    badgeBox.innerText = "Desarrollador Codorniz Oro";
+                    labelTipo.innerText = "Активная учетная запись Microsoft";
+                    badgeBox.innerText = "Золотой разработчик Codorniz";
                     badgeBox.style.background = "#228B22";
 
                 } catch (e) {
-                    // Control de fallos de inicialización del WinRT
-                    labelTipo.innerText = "Usuario Invitado Store";
-                    nombreBox.innerText = "Usuario Local Desconectado";
-                    emailBox.innerText = "cuenta@codornizstore.local";
+                    // Обработка ошибок инициализации WinRT
+                    labelTipo.innerText = "Гостевой пользователь магазина";
+                    nombreBox.innerText = "Отключенный локальный пользователь";
+                    emailBox.innerText = "account@codornizstore.local";
                 }
             } else {
-                /* CONTADOR CHROME WEB: Si se ejecuta en navegador, simula un perfil limpio genérico */
-                labelTipo.innerText = "Cuenta Microsoft (Modo Web)";
-                nombreBox.innerText = "Usuario Externo de Internet";
-                emailBox.innerText = "usuario.web@outlook.com";
+                /* РЕЖИМ CHROME/WEB: если открыто в браузере, имитируется чистый общий профиль */
+                labelTipo.innerText = "Учетная запись Microsoft (Веб-режим)";
+                nombreBox.innerText = "Внешний интернет-пользователь";
+                emailBox.innerText = "web.user@outlook.com";
                 inicialBox.innerText = "W";
-                badgeBox.innerText = "Invitado Público Store";
+                badgeBox.innerText = "Публичный гость магазина";
             }
 
-            // Dispara la animación de entrada Metro horizontal de forma controlada
+            // Запускает анимацию входа Metro горизонтально с контролем
             setTimeout(function() {
                 var content = document.getElementById("content");
                 if (content) { content.classList.add("metro-activa"); }
