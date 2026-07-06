@@ -1,0 +1,840 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>CodornizStore Server</title>
+    <link href="//Microsoft.WinJS.2.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            background: url('images/storebgr.jpg') no-repeat fixed center / 100% 100% !important;
+            background-color: #228B22 !important;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+            overflow: hidden;
+            width: 100vw !important;
+            height: 100vh !important;
+        }
+        ::-webkit-scrollbar {
+            display: none !important;
+            width: 0px !important;
+            height: 0px !important;
+            background: transparent !important;
+        }
+        #topbar {
+            height: 70px;
+            background: #1A1A1A;
+            display: flex;
+            align-items: center;
+            padding: 0 40px 0 20px;
+            box-sizing: border-box;
+            z-index: 1010;
+            position: relative;
+        }
+        .topbar-codorniz-logo {
+            height: 100%;
+            width: auto;
+            max-height: 70px;
+            object-fit: contain;
+            margin-right: 14px;
+            display: block;
+            cursor: pointer;
+        }
+        .store-brand {
+            font-size: 24px;
+            font-weight: 300;
+            margin-right: 32px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .page-title {
+            font-size: 24px;
+            font-weight: 200;
+            color: #ffffff !important;
+            opacity: 1 !important;
+            cursor: pointer;
+            margin-right: 30px;
+        }
+        .page-title:hover {
+            opacity: 0.8 !important;
+        }
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.4);
+            padding: 4px 10px;
+            margin-left: auto;
+            width: 240px;
+        }
+        .search-container input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+        }
+        .search-container span {
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        #content {
+            padding: 30px 80px;
+            height: calc(100vh - 70px);
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            display: block;
+            min-width: 100% !important;
+            background-color: transparent !important;
+        }
+        .section-group {
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 60px;
+        }
+        .section-title-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 5px;
+        }
+        .destacados-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .spotlight-box {
+            width: 640px;
+            height: 320px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: #111;
+        }
+        .spotlight-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .tiles-list-horizontal-grid {
+            margin-top: 10px;
+            display: inline-flex;
+            flex-direction: column;
+            height: 610px;
+            flex-wrap: wrap;
+            gap: 15px 32px;
+        }
+        .app-item-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 170px;
+            white-space: normal;
+            color: inherit;
+            cursor: pointer;
+        }
+        .app-tile {
+            width: 170px;
+            height: 170px;
+            background: rgba(51, 51, 51, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .app-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .tile-title {
+            margin-top: 6px;
+            font-size: 14px;
+            color: #fff;
+        }
+        .tile-sub {
+            font-size: 12px;
+            color: #bbb;
+        }
+        .metro-fade {
+            opacity: 0;
+            animation: metroEntrance 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+        }
+        @keyframes metroEntrance {
+            from { opacity: 0; transform: translateX(60px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        #app-download-view {
+            position: fixed !important;
+            top: 70px !important;
+            right: -100% !important;
+            left: auto !important;
+            width: calc(100% - 160px) !important;
+            height: calc(100vh - 70px) !important;
+            background: rgba(20, 20, 20, 0.98) !important;
+            z-index: 1000 !important;
+            padding: 40px 80px !important;
+            display: flex !important;
+            visibility: hidden !important;
+            transition: right 0.28s cubic-bezier(0.1, 0.9, 0.2, 1), visibility 0.28s !important;
+            box-shadow: none !important;
+        }
+        #app-download-view.open {
+            visibility: visible !important;
+            right: 0px !important;
+        }
+        .download-sidebar {
+            width: 280px;
+            margin-right: 60px;
+        }
+        .download-icon {
+            width: 140px;
+            height: 140px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .metro-progress-container {
+            width: 100% !important;
+            height: 10px;
+            background: rgba(255,255,255,0.15);
+            margin: 25px 0 10px 0;
+            display: none;
+            position: relative;
+        }
+        .metro-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #228B22;
+            transition: width 0.1s linear;
+        }
+        .btn-install {
+            background: #228B22;
+            color: #fff;
+            padding: 12px 30px;
+            width: 100%;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-install.btn-open-ready {
+            background: #1ba1e2 !important;
+        }
+        .btn-back {
+            background: transparent;
+            color: #aaa;
+            border: 2px solid #555;
+            padding: 8px 20px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .download-details {
+            flex: 1;
+            white-space: normal;
+        }
+        .download-details h1 {
+            font-weight: 200;
+            font-size: 42px;
+            margin: 0;
+        }
+        #downloads-hub-view, #apps-list-view,
+        #wishlist-view, #account-view {
+            display: none;
+            position: fixed !important;
+            top: 70px !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: calc(100vh - 70px) !important;
+            background: #111111 !important;
+            z-index: 900 !important;
+            box-sizing: border-box !important;
+            padding: 40px 80px !important;
+            overflow-y: auto !important;
+            white-space: normal !important;
+            opacity: 0;
+            transition: opacity 0.22s ease-in-out;
+            box-shadow: none !important;
+        }
+        #downloads-hub-view.view-open,
+        #apps-list-view.view-open,
+        #wishlist-view.view-open,
+        #account-view.view-open {
+            display: block !important;
+            opacity: 1 !important;
+        }
+
+        /* ESTILOS DEL TOAST NOTIFICATION DE LA APP */
+        #toast-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .Codorniz-toast {
+            background-color: #228B22;
+            color: white;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 300;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateX(100%);
+            animation: slideInToast 0.4s forwards, fadeOutToast 0.4s 4s forwards;
+            pointer-events: auto;
+            border-left: 5px solid #fff;
+        }
+        @keyframes slideInToast {
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeOutToast {
+            to { opacity: 0; transform: translateX(100%); }
+        }
+<<<<<<< HEAD
+=======
+        
+        /* ESTILOS DE LAS APPBARS */
+        #metro-appbar-superior { 
+            position: fixed; 
+            top: -110px; 
+            left: 0; 
+            width: 100%; 
+            height: 95px; 
+            background: rgba(28, 28, 28, 0.95); 
+            transition: top 0.2s; 
+            z-index: 99998; 
+        } 
+        #metro-appbar-superior.appbar-activa { top: 0; }
+        
+        #metro-appbar-inferior { 
+            position: fixed; 
+            bottom: -130px; 
+            left: 0; 
+            width: 100%; 
+            height: 95px; 
+            background: rgba(28, 28, 28, 0.95); 
+            transition: bottom 0.2s; 
+            z-index: 99998; 
+        } 
+        #metro-appbar-inferior.appbar-activa { bottom: 0; }
+>>>>>>> 14e0322 (Actualizacion de CodornizStore: paquete firmado y funcional 1.0.0.1)
+    </style>
+</head>
+<body>
+<div id="topbar">
+    <img src="images/codorniz.png" class="topbar-codorniz-logo" onclick="irAlInicio()">
+    <div class="store-brand" onclick="irAlInicio()">CodornizStore</div>
+    <div class="page-title" onclick="mostrarSeccion('apps-list-view')">Aplicaciones</div>
+    <div class="page-title" onclick="mostrarSeccion('downloads-hub-view')">Descargas</div>
+    <div class="page-title" onclick="mostrarSeccion('account-view')">Mi Cuenta</div>
+    <div class="page-title" onclick="mostrarSeccion('wishlist-view')">Wishlist</div>
+    
+    <div class="search-container">
+        <input type="text" id="store-search-input" placeholder="Buscar...">
+        <span onclick="filtrarCatalogoBoton()">🔍</span>
+    </div>
+</div>
+
+<div id="toast-container"></div> <!-- CONTENEDOR DE TOASTS -->
+
+    <div id="content">
+        <div class="section-group metro-fade">
+            <div class="section-title-container">
+                <h2>Destacados</h2>
+            </div>
+            <div class="destacados-wrapper">
+                <div onclick="openAppDetails('Angry Birds Space')">
+                    <div id="spotlight" class="spotlight-box">
+                        <img src="images/absp.jpg">
+                    </div>
+                    <div class="tile-title">Angry Birds Space</div>
+                </div>
+                <div style="display:flex; flex-direction:row; gap:32px;">
+                    <div class="app-item-wrapper"
+                         onclick="openAppDetails('Fruit Ninja')">
+                        <div class="app-tile">
+                            <img src="images/iconos_extraidos/fruitninja.png">
+                        </div>
+                        <div class="tile-title">Fruit Ninja</div>
+                    </div>
+                    <div class="app-item-wrapper"
+                         onclick="openAppDetails('Netflix')">
+                        <div class="app-tile">
+                            <img src="images/iconos_extraidos/netflix.png">
+                        </div>
+                        <div class="tile-title">Netflix</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-group metro-fade" style="animation-delay: 0.05s;">
+            <div class="section-title-container">
+                <h2>Más aplicaciones</h2>
+            </div>
+            <div class="tiles-list-horizontal-grid">
+                <div class="app-item-wrapper" onclick="openAppDetails('Xunxo News')"><div class="app-tile"><img src="images/iconos_extraidos/Xuxo.png"></div><div class="tile-title">Xunxo News</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('newsXpresso Metro')"><div class="app-tile"><img src="images/iconos_extraidos/newsxpresso.png"></div><div class="tile-title" id="title-3">newsXpresso Metro</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Fresh Paint')"><div class="app-tile"><img src="images/iconos_extraidos/freshpaint.png"></div><div class="tile-title">Fresh Paint</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('DrayMusic')"><div class="app-tile"><img src="images/iconos_extraidos/1773704616_DrayMusic_1.0.0.0_AnyCPU.png"></div><div class="tile-title">DrayMusic</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Rowi')"><div class="app-tile"><img src="images/iconos_extraidos/rowi-150x150.png"></div><div class="tile-title">Rowi</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Opentracks')"><div class="app-tile"><img src="images/iconos_extraidos/mp3hubesopentracks.png"></div><div class="tile-title">Opentracks</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Nokia AppSocial')"><div class="app-tile"><img src="images/iconos_extraidos/nokiaappsocial.png"></div><div class="tile-title">Nokia AppSocial</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('InsiderHub')"><div class="app-tile"><img src="images/iconos_extraidos/insiderhub.png"></div><div class="tile-title">InsiderHub</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('mytube')"><div class="app-tile"><img src="images/iconos_extraidos/mytube.png"></div><div class="tile-title">mytube</div><div class="tile-sub">Gratis</div></div>
+            </div>
+        </div>
+        <div class="section-group metro-fade" style="animation-delay: 0.1s;">
+            <div class="section-title-container">
+                <h2>Juegos</h2>
+            </div>
+            <div class="tiles-list-horizontal-grid">
+                <div class="app-item-wrapper" onclick="openAppDetails('Angry Birds Space')"><div class="app-tile" style="background:#004d99;"><img src="images/iconos_extraidos/angrybirds.png"></div><div class="tile-title">Angry Birds Space</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Fruit Ninja')"><div class="app-tile" style="background:#5c931e;"><img src="images/iconos_extraidos/fruitninja.png"></div><div class="tile-title">Fruit Ninja</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Cut The Rope')"><div class="app-tile" style="background:#6aa822;"><img src="images/iconos_extraidos/CutTheRope.png"></div><div class="tile-title">Cut The Rope</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('ProdigyMath')"><div class="app-tile" style="background:#00a2ed;"><img src="images/iconos_extraidos/ProdigyMath_1.17.0.0_AnyCPU_Debug.png"></div><div class="tile-title">ProdigyMath</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Rayman Jungle Run')"><div class="app-tile" style="background:#d80073;"><img src="images/iconos_extraidos/raymanjunglerun.png"></div><div class="tile-title">Rayman Jungle Run</div><div class="tile-sub">Gratis</div></div>
+            </div>
+        </div>
+        <div class="section-group metro-fade" style="animation-delay: 0.15s;">
+            <div class="section-title-container">
+                <h2>Comida y Productividad</h2>
+            </div>
+            <div class="tiles-list-horizontal-grid">
+                <div class="app-item-wrapper" onclick="openAppDetails('RecipeKeeper')"><div class="app-tile" style="background:#ff0066;"><img src="images/iconos_extraidos/recipekeeper.png"></div><div class="tile-title">RecipeKeeper</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('El Tenedor')"><div class="app-tile" style="background:#00aba9;"><img src="images/iconos_extraidos/eltenedor.png"></div><div class="tile-title">El Tenedor</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Koode Reader')"><div class="app-tile" style="background:#1ba1e2;"><img src="images/iconos_extraidos/koodereader.png"></div><div class="tile-title">Koode Reader</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Adobe Reader')"><div class="app-tile" style="background:#d80073;"><img src="images/iconos_extraidos/metro_reader_small_logo.targetsize-256.png"></div><div class="tile-title">Adobe Reader</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('Evernote')"><div class="app-tile" style="background:#33a933;"><img src="images/iconos_extraidos/evernote.png"></div><div class="tile-title">Evernote</div><div class="tile-sub">Gratis</div></div>
+            </div>
+        </div>
+        <div class="section-group metro-fade" style="animation-delay: 0.2s;">
+            <div class="section-title-container">
+                <h2>Tecnología</h2>
+            </div>
+            <div class="tiles-list-horizontal-grid">
+                <div class="app-item-wrapper" onclick="openAppDetails('wpapp')"><div class="app-tile" style="background:#252525;"><img src="images/iconos_extraidos/wpapp.png"></div><div class="tile-title">wpapp</div><div class="tile-sub">Gratis</div></div>
+                <div class="app-item-wrapper" onclick="openAppDetails('WPCentral')"><div class="app-tile" style="background:#00a300;"><img src="images/iconos_extraidos/WPAPPCENTRAL.png"></div><div class="tile-title">WPCentral</div><div class="tile-sub">Gratis</div></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="app-download-view">
+        <div class="download-sidebar">
+            <div id="view-app-icon" class="download-icon"></div>
+            <div class="metro-progress-container" id="view-progress-wrapper">
+                <div class="metro-progress-bar" id="view-progress-bar"></div>
+            </div>
+            <button class="btn-install" id="view-download-action">Descargar</button>
+            <button class="btn-back" onclick="closeAppDetails()">Volver</button>
+        </div>
+        <div class="download-details">
+<<<<<<< HEAD
+            <h1 id="view-app-title">Cargando kaplow...</h1>
+=======
+            <h1 id="view-app-title"></h1>
+>>>>>>> 14e0322 (Actualizacion de CodornizStore: paquete firmado y funcional 1.0.0.1)
+            <div class="publisher" id="view-app-pub">Codorniz Developer</div>
+            <div id="view-app-stars" style="color:#ffb900; margin:10px 0;">★★★★★</div>
+            <div class="description" id="view-app-desc" style="color:#ccc; max-width:700px; white-space:normal; margin-bottom:20px;">Espere...</div>
+            <div class="screenshots-group">
+                <h3 style="font-weight:300; font-size:18px;">Capturas de pantalla</h3>
+                <div style="width:320px; height:180px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); display:inline-block; margin-right:15px;"></div>
+                <div style="width:320px; height:180px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); display:inline-block;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="downloads-hub-view" class="metro-fade">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+             <h1>Cola de descargas</h1><button class="btn-back" onclick="irAlInicio()" style="width:auto; padding:10px 25px;">Volver</button>
+        </div>
+        <div style="display:flex; flex-direction:row; gap:32px; flex-wrap:wrap;">
+            <div id="empty-downloads-msg" style="opacity:0.6;">No hay descargas pendientes en este momento.</div>
+        </div>
+    </div>
+    
+    <div id="wishlist-view" class="metro-fade">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+             <h1>Wishlist Codorniz Nativa</h1><button class="btn-back" onclick="irAlInicio()" style="width:auto; padding:10px 25px;">Volver</button>
+        </div>
+        <div style="display:flex; gap:32px;">
+            <div class="app-item-wrapper" onclick="openAppDetails('Angry Birds Space')"><div class="app-tile" style="background:#004d99;"><img src="images/iconos_extraidos/angrybirds.png"></div><div class="tile-title">Angry Birds Space</div></div>
+        </div>
+    </div>
+    
+    <div id="account-view" class="metro-fade">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+             <h1>Mi Cuenta Codorniz</h1><button class="btn-back" onclick="irAlInicio()" style="width:auto; padding:10px 25px;">Volver</button>
+        </div>
+        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:30px; max-width:600px;">
+            <div style="display:flex; align-items:center; gap:20px; margin-bottom:25px;">
+                 <div style="width:80px; height:80px; background:#228B22; display:flex; align-items:center; justify-content:center; font-size:36px; color:#fff;">C</div>
+                 <div><h2 style="font-weight:300; margin:0; font-size:24px;">Usuario Familiar</h2><div style="font-size:14px; color:#228B22; font-weight:bold;">Desarrollador Codorniz Oro</div></div>
+            </div>
+            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; font-size:14px; color:#ccc; display:flex; flex-direction:column; gap:12px;">
+                 <div><strong>Servidor de Estáticos:</strong> GitHub Pages Server</div><div><strong>Servidor de Descargas:</strong> GitHub Releases CDN</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="apps-list-view" class="metro-fade">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+             <h1>Todas las aplicaciones</h1><button class="btn-back" onclick="irAlInicio()" style="width:auto; padding:10px 25px;">Volver</button>
+        </div>
+        <div class="full-grid-container" id="grid-search-modular" style="display:flex; flex-direction:row; gap:20px 32px; flex-wrap:wrap; height:auto;">
+            <div class="app-item-wrapper" onclick="openAppDetails('Angry Birds Space')"><div class="app-tile" style="background:#004d99;"><img src="images/iconos_extraidos/angrybirds.png"></div><div class="tile-title" id="title-0">Angry Birds Space</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Fruit Ninja')"><div class="app-tile" style="background:#5c931e;"><img src="images/iconos_extraidos/fruitninja.png"></div><div class="tile-title" id="title-1">Fruit Ninja</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('ProdigyMath')"><div class="app-tile" style="background:#00a2ed;"><img src="images/iconos_extraidos/ProdigyMath_1.17.0.0_AnyCPU_Debug.png"></div><div class="tile-title" id="title-2">ProdigyMath</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('newsXpresso Metro')"><div class="app-tile" style="background:#e51400;"><img src="images/iconos_extraidos/newsxpresso.png"></div><div class="tile-title" id="title-3">newsXpresso Metro</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Opentracks')"><div class="app-tile" style="background:#ff6a00;"><img src="images/iconos_extraidos/mp3hubesopentracks.png"></div><div class="tile-title" id="title-4">Opentracks</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('wpapp')"><div class="app-tile" style="background:#252525;"><img src="images/iconos_extraidos/wpapp.png"></div><div class="tile-title" id="title-5">wpapp</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Evernote')"><div class="app-tile" style="background:#33a933;"><img src="images/iconos_extraidos/evernote.png"></div><div class="tile-title" id="title-6">Evernote</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('mytube')"><div class="app-tile" style="background:#107c41;"><img src="images/iconos_extraidos/mytube.png"></div><div class="tile-title" id="title-7">mytube</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('DrayMusic')"><div class="app-tile" style="background:#1ba1e2;"><img src="images/iconos_extraidos/1773704616_DrayMusic_1.0.0.0_AnyCPU.png"></div><div class="tile-title" id="title-8">DrayMusic</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Netflix')"><div class="app-tile" style="background:#e50914;"><img src="images/iconos_extraidos/netflix.png"></div><div class="tile-title" id="title-9">Netflix</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Rowi')"><div class="app-tile" style="background:#000;"><img src="images/iconos_extraidos/rowi-150x150.png"></div><div class="tile-title" id="title-10">Rowi</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Nokia AppSocial')"><div class="app-tile" style="background:#0066ff;"><img src="images/iconos_extraidos/nokiaappsocial.png"></div><div class="tile-title" id="title-11">Nokia AppSocial</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Koode Reader')"><div class="app-tile" style="background:#1ba1e2;"><img src="images/iconos_extraidos/koodereader.png"></div><div class="tile-title" id="title-12">Koode Reader</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('El Tenedor')"><div class="app-tile" style="background:#00aba9;"><img src="images/iconos_extraidos/eltenedor.png"></div><div class="tile-title" id="title-13">El Tenedor</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Rayman Jungle Run')"><div class="app-tile" style="background:#d80073;"><img src="images/iconos_extraidos/raymanjunglerun.png"></div><div class="tile-title" id="title-14">Rayman Jungle Run</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Cut The Rope')"><div class="app-tile" style="background:#6aa822;"><img src="images/iconos_extraidos/CutTheRope.png"></div><div class="tile-title" id="title-15">Cut The Rope</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Xunxo News')"><div class="app-tile" style="background:#00b124;"><img src="images/iconos_extraidos/Xuxo.png"></div><div class="tile-title" id="title-16">Xunxo News</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Fresh Paint')"><div class="app-tile" style="background:#603cba;"><img src="images/iconos_extraidos/freshpaint.png"></div><div class="tile-title" id="title-17">Fresh Paint</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('RecipeKeeper')"><div class="app-tile" style="background:#ff0066;"><img src="images/iconos_extraidos/recipekeeper.png"></div><div class="tile-title" id="title-18">RecipeKeeper</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('Adobe Reader')"><div class="app-tile" style="background:#d80073;"><img src="images/iconos_extraidos/metro_reader_small_logo.targetsize-256.png"></div><div class="tile-title" id="title-19">Adobe Reader</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('InsiderHub')"><div class="app-tile" style="background:#2d89ef;"><img src="images/iconos_extraidos/insiderhub.png"></div><div class="tile-title" id="title-20">InsiderHub</div></div>
+            <div class="app-item-wrapper" onclick="openAppDetails('WPCentral')"><div class="app-tile" style="background:#00a300;"><img src="images/iconos_extraidos/WPAPPCENTRAL.png"></div><div class="tile-title" id="title-21">WPCentral</div></div>
+        </div>
+    </div>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<script>
+    var catalogoApps = {
+        'Angry Birds Space': { pub: 'Rovio Entertainment', desc: 'Los iconicos pajaros de angry birds se trasladan al espacio,usa la resortera y tumba cerdos.', icon: 'angrybirds.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/1ED5AEA5.AngryBirdsSpace_1.3.1.0_x86__p2gbknwb5d8r2.appx' },
+        'Fruit Ninja': { pub: 'Halfbrick Studios', desc: 'Saca tu katana y corta las frutas.', icon: 'fruitninja.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/HalfbrickStudiosPtyLtd.FruitNinja_1.8.1.66_x86__w77bc8x1h5kya.appx' },
+        'ProdigyMath': { pub: 'Prodigy Math Team', desc: 'Una Plataforma educativa de matemáticas.', icon: 'ProdigyMath_1.17.0.0_AnyCPU_Debug.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/ProdigyMath_1.17.0.0_AnyCPU_Debug.appx' },
+        'newsXpresso Metro': { pub: 'newsXpresso', desc: 'Tus noticias en el expreso.', icon: 'newsxpresso.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/esobiIncorporated.newsXpressoMetro_2.0.2.208_neutral__sngswjb5h6fyg.appx' },
+        'Opentracks': { pub: 'Opentracks Studio', desc: 'El reproductor de audio del dramatico de chockingnetdude xdxd OPENDRAMAS.', icon: 'mp3hubesopentracks.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/Mp3HubPlayer_1.0.0.2_AnyCPU_Debug.appx' },
+        'wpapp': { pub: 'wpapp Team', desc: 'La aplicacion tipo sandbox de windows phone ehh no se.', icon: 'wpapp.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/wpapp.appx' },
+        'Evernote': { pub: 'Evernote Corp', desc: 'Toma notas y organiza ideas.', icon: 'evernote.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/Evernote.Evernote_3.3.0.102_x86__q4d96b2w5wcc2.appx' },
+        'mytube': { pub: 'Ryken Studio', desc: 'Un cliente de videos iconico para windows 8 y 8.1!.', icon: 'mytube.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/mytube.appx' },
+        'DrayMusic': { pub: 'DrayMusic Studio', desc: 'Reproductor de musica increible.', icon: '1773704616_DrayMusic_1.0.0.0_AnyCPU.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/1773704616_DrayMusic_1.0.0.0_AnyCPU.appx' },
+        'Netflix': { pub: 'Netflix Inc', desc: 'Ve tus series y peliculas favoritas agarra tus palomitas ahora mismo.', icon: 'netflix.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/4DF9E0F8.Netflix_2.22.0.39_x86__mcm4njqhnhss8.appx' },
+        'Rowi': { pub: 'Hidden Pineapple', desc: 'El gran cliente de twitter conocido de windows phone ha llegado a pc.', icon: 'rowi-150x150.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/HiddenPineappleLLC.Rowi_0.8.0.0_x86__8364z769gkj0p.appx' },
+        'Nokia AppSocial': { pub: 'Nokia Corporation', desc: 'La app social de nokia,habla con tus conocidos.', icon: 'nokiaappsocial.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/NokiaCorporation.AppSocial_1.9.0.0_x86__6d0q6r3z979nw.appx' },
+        'Koode Reader': { pub: 'Koode Team', desc: 'Un lector de pdfs,documentos etc etc.', icon: 'koodereader.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/52487Koode.56414CB813359_1.5.0.4_neutral__m1bqtb7san9p0.appx' },
+        'El Tenedor': { pub: 'La Fourchette', desc: 'Una gran aplicacions de recetas despues de bing food and drink/gourmet.', icon: 'eltenedor.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/LaFourchette.comElTenedor.LaFourchette_2015.407.1353.2545_neutral_._xjascxykqffr4.AppxBundle.appx' },
+        'Rayman Jungle Run': { pub: 'Ubisoft', desc: 'El Legendario heroe Rayman llega a windows 8.1!juegalo ahora mismo.', icon: 'raymanjunglerun.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/UbisoftEntertainment.RaymanJungleRun_1.2.0.88_x86__dbgk1hhpxymar.Appx' },
+        'Cut The Rope': { pub: 'ZeptoLab UK', desc: 'Corta las cuerdas y dale de comer al gran Om Nom.', icon: 'CutTheRope.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/ZeptoLabUKLimited.CutTheRope_1.2.0.43_x86__sq9zxnwrk84pj.appx' },
+        'Xunxo News': { pub: 'XunxoCorp', desc: 'Mira tus noticias en donde sea.', icon: 'Xuxo.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/12022Xurxo.XurxoNews_1.0.0.0_neutral__cffdx9p3b7k32.appx' },
+        'Fresh Paint': { pub: 'Microsoft Studios', desc: 'Pinta,Dibuja,bocetea aqui tienes el set completo de pinceles,pintura seca y lapices.', icon: 'freshpaint.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/Microsoft.FreshPaint_2.0.15133.0_x86__8wekyb3d8bbwe.appx' },
+        'RecipeKeeper': { pub: 'Recipe Keeper Team', desc: 'Organiza tus recetas y cocina para alimentar a tu familia.', icon: 'recipekeeper.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/TudorspanLimited.RecipeKeeperFree_1.5.2.0_x86__mnckez06wj9wa.appx' },
+        'Adobe Reader': { pub: 'Adobe Systems', desc: 'El iconico lector de pdfs ha llegado a windows 8.1 prueba y visualiza tus documentos!.', icon: 'metro_reader_small_logo.targetsize-256.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/AdobeSystemsIncorporated.AdobeReader_3.1.8.7675_x86__ynb6jyjzte8ga.Appx' },
+        'InsiderHub': { pub: 'Microsoft Insider', desc: 'Opina y prueba las nuevas compilaciones.', icon: 'insiderhub.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/Microsoft.InsiderHub_15.3.30.1_x86__8wekyb3d8bbwe_1780310454359.appx' },
+        'WPCentral': { pub: 'WPCentral Team', desc: 'Noticias,y mas en windows 8 y 8.1.', icon: 'WPAPPCENTRAL.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/WPCentral.Win8_1.3.1.2_AnyCPU.appx' }
+    };
+
+=======
+
+<script>
+    var catalogoApps = {
+        'Angry Birds Space': { pub: 'Rovio Entertainment', desc: 'Los iconicos pajaros de angry birds se trasladan al espacio,usa la resortera y tumba cerdos.', icon: 'angrybirds.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/1ED5AEA5.AngryBirdsSpace_1.3.1.0_x86__p2gbknwb5d8r2.appx' },
+        'Fruit Ninja': { pub: 'Halfbrick Studios', desc: 'Saca tu katana y corta las frutas.', icon: 'fruitninja.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/HalfbrickStudiosPtyLtd.FruitNinja_1.8.1.66_x86__w77bc8x1h5kya.appx' },
+        'ProdigyMath': { pub: 'Prodigy Math Team', desc: 'Una Plataforma educativa de matemáticas.', icon: 'ProdigyMath_1.17.0.0_AnyCPU_Debug.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/ProdigyMath_1.17.0.0_AnyCPU_Debug.appx' },
+        'newsXpresso Metro': { pub: 'newsXpresso', desc: 'Tus noticias en el expreso.', icon: 'newsxpresso.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/esobiIncorporated.newsXpressoMetro_2.0.2.208_neutral__sngswjb5h6fyg.appx' },
+        'Opentracks': { pub: 'Opentracks Studio', desc: 'El reproductor de audio del dramatico de chockingnetdude xdxd.', icon: 'mp3hubesopentracks.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/Mp3HubPlayer_1.0.0.2_AnyCPU_Debug.appx' },
+        'wpapp': { pub: 'wpapp Team', desc: 'La aplicacion tipo sandbox de windows phone ehh no se.', icon: 'wpapp.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/wpapp.appx' },
+        'Evernote': { pub: 'Evernote Corp', desc: 'Toma notas y organiza ideas.', icon: 'evernote.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/Evernote.Evernote_3.3.0.102_x86__q4d96b2w5wcc2.appx' },
+        'mytube': { pub: 'Ryken Studio', desc: 'Un cliente de videos iconico para windows 8 y 8.1!.', icon: 'mytube.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/mytube.appx' },
+        'DrayMusic': { pub: 'DrayMusic Studio', desc: 'Reproductor de musica increible.', icon: '1773704616_DrayMusic_1.0.0.0_AnyCPU.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/1773704616_DrayMusic_1.0.0.0_AnyCPU.appx' },
+        'Netflix': { pub: 'Netflix Inc', desc: 'Ve tus series y peliculas favoritas agarra tus palomitas ahora mismo.', icon: 'netflix.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/4DF9E0F8.Netflix_2.22.0.39_x86__mcm4njqhnhss8.appx' },
+        'Rowi': { pub: 'Hidden Pineapple', desc: 'El gran cliente de twitter conocido de windows phone ha llegado a pc.', icon: 'rowi-150x150.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/HiddenPineappleLLC.Rowi_0.8.0.0_x86__8364z769gkj0p.appx' },
+        'Nokia AppSocial': { pub: 'Nokia Corporation', desc: 'La app social de nokia,habla con tus conocidos.', icon: 'nokiaappsocial.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/NokiaCorporation.AppSocial_1.9.0.0_x86__6d0q6r3z979nw.appx' },
+        'Koode Reader': { pub: 'Koode Team', desc: 'Un lector de pdfs,documentos etc etc.', icon: 'koodereader.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/52487Koode.56414CB813359_1.5.0.4_neutral__m1bqtb7san9p0.appx' },
+        'El Tenedor': { pub: 'La Fourchette', desc: 'Una gran aplicacions de recetas despues de bing food and drink/gourmet.', icon: 'eltenedor.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/LaFourchette.comElTenedor.LaFourchette_2015.407.1353.2545_neutral_._xjascxykqffr4.AppxBundle.appx' },
+        'Rayman Jungle Run': { pub: 'Ubisoft', desc: 'El Legendario heroe Rayman llega a windows 8.1!juegalo ahora mismo.', icon: 'raymanjunglerun.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/UbisoftEntertainment.RaymanJungleRun_1.2.0.88_x86__dbgk1hhpxymar.Appx' },
+        'Cut The Rope': { pub: 'ZeptoLab UK', desc: 'Corta las cuerdas y dale de comer al gran Om Nom.', icon: 'CutTheRope.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/ZeptoLabUKLimited.CutTheRope_1.2.0.43_x86__sq9zxnwrk84pj.appx' },
+        'Xunxo News': { pub: 'XunxoCorp', desc: 'Mira tus noticias en donde sea.', icon: 'Xuxo.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/12022Xurxo.XurxoNews_1.0.0.0_neutral__cffdx9p3b7k32.appx' },
+        'Fresh Paint': { pub: 'Microsoft Studios', desc: 'Pinta,Dibuja,bocetea aqui tienes el set completo de pinceles,pintura seca y lapices.', icon: 'freshpaint.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/Microsoft.FreshPaint_2.0.15133.0_x86__8wekyb3d8bbwe.appx' },
+        'RecipeKeeper': { pub: 'Recipe Keeper Team', desc: 'Organiza tus recetas y cocina para alimentar a tu familia.', icon: 'recipekeeper.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/TudorspanLimited.RecipeKeeperFree_1.5.2.0_x86__mnckez06wj9wa.appx' },
+        'Adobe Reader': { pub: 'Adobe Systems', desc: 'El iconico lector de pdfs ha llegado a windows 8.1 prueba y visualiza tus documentos!.', icon: 'metro_reader_small_logo.targetsize-256.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/AdobeSystemsIncorporated.AdobeReader_3.1.8.7675_x86__ynb6jyjzte8ga.Appx' },
+        'InsiderHub': { pub: 'Microsoft Insider', desc: 'Opina y prueba las nuevas compilaciones.', icon: 'insiderhub.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/Microsoft.InsiderHub_15.3.30.1_x86__8wekyb3d8bbwe_1780310454359.appx' },
+        'WPCentral': { pub: 'WPCentral Team', desc: 'Noticias,y mas en windows 8 y 8.1.', icon: 'WPAPPCENTRAL.png', url: 'https://github.com/SirCoturnix/CodornizStoreServer/releases/download/CodornizStoreTeam/WPCentral.Win8_1.3.1.2_AnyCPU.appx' }
+    };
+
+>>>>>>> 14e0322 (Actualizacion de CodornizStore: paquete firmado y funcional 1.0.0.1)
+    function irAlInicio() {
+        var vistas = document.querySelectorAll('[id$="-view"]');
+        for (var i = 0; i < vistas.length; i++) {
+            vistas[i].classList.remove('view-open', 'open');
+        }
+    }
+
+    function closeAppDetails() {
+        document.getElementById('app-download-view').classList.remove("open");
+    }
+
+    function mostrarSeccion(id) {
+        irAlInicio();
+        var seccion = document.getElementById(id);
+        if (seccion) seccion.classList.add('view-open');
+    }
+
+    function mostrarSeccionAplicaciones() { mostrarSeccion('apps-list-view'); }
+    function mostrarSeccionDescargas() { mostrarSeccion('downloads-hub-view'); }
+    function mostrarSeccionCuenta() { mostrarSeccion('account-view'); }
+    function mostrarSeccionWishlist() { mostrarSeccion('wishlist-view'); }
+    
+    function filtrarCatalogoBoton() { console.log("Búsqueda en desarrollo..."); }
+
+    // SISTEMA INTEGRADO DE TOASTS: APP + WINDOWS 10 NATIVO
+    function mostrarToast(mensaje) {
+        // 1. Toast interno (El verde de la app estilo Windows 8)
+        var container = document.getElementById('toast-container');
+        var toast = document.createElement('div');
+        toast.className = 'Codorniz-toast';
+        toast.innerText = mensaje;
+        container.appendChild(toast);
+
+        // Remover el toast interno después de 4.5 segundos
+        setTimeout(function() {
+            if (container.contains(toast)) {
+                container.removeChild(toast);
+            }
+        }, 4500);
+
+        // 2. Notificación Nativa en el sistema (Windows 10/11)
+        if (typeof Windows !== 'undefined' && typeof Windows.UI !== 'undefined') {
+            var notifications = Windows.UI.Notifications;
+            var template = notifications.ToastTemplateType.toastText01;
+            var toastXml = notifications.ToastNotificationManager.getTemplateContent(template);
+            var toastTextElements = toastXml.getElementsByTagName("text");
+            toastTextElements[0].appendChild(toastXml.createTextNode(mensaje));
+            
+            var nativeToast = new notifications.ToastNotification(toastXml);
+            notifications.ToastNotificationManager.createToastNotifier().show(nativeToast);
+        } else if (window.Notification) {
+            if (Notification.permission === "granted") {
+                new Notification("CodornizStore", { body: mensaje, icon: "images/codorniz.png" });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === "granted") {
+                        new Notification("CodornizStore", { body: mensaje, icon: "images/codorniz.png" });
+                    }
+                });
+            }
+        }
+    }
+
+    function openAppDetails(nombreApp) {
+        var app = catalogoApps[nombreApp];
+        if (!app) return;
+        
+        document.getElementById('view-app-title').innerText = nombreApp;
+        document.getElementById('view-app-pub').innerText = app.pub;
+        document.getElementById('view-app-desc').innerText = app.desc;
+        document.getElementById('view-app-icon').style.backgroundImage = "url('images/iconos_extraidos/" + app.icon + "')";
+        
+        var btnAction = document.getElementById('view-download-action');
+        
+        // ESTADO INICIAL: BOTON PARA DESCARGAR
+        btnAction.innerText = "Descargar";
+        btnAction.style.background = "#228B22";
+        btnAction.disabled = false;
+        
+        btnAction.onclick = function() {
+            // CAMBIO DE ESTADO: DESCARGANDO
+            btnAction.innerText = "Descargando...";
+            btnAction.style.background = "#555";
+            btnAction.disabled = true; // Desactivar para evitar multiples clicks
+            
+            mostrarToast("Mr Codorniz está cargando tu appx hacia tu pc, espérate un ratito.");
+            
+            // Lógica para entorno nativo WinJS (donde tienes acceso al Launcher)
+            if (typeof Windows !== 'undefined' && typeof Windows.Networking !== 'undefined') {
+                try {
+                    var uri = new Windows.Foundation.Uri(app.url);
+                    var localFolder = Windows.Storage.ApplicationData.current.localFolder;
+                    var nombreArchivoLimpio = app.icon.replace(".png", "") + ".appx"; // Usa el nombre de la app para el archivo
+                    
+                    localFolder.createFileAsync(nombreArchivoLimpio, Windows.Storage.CreationCollisionOption.replaceExisting)
+                        .then(function (newFile) {
+                            var downloader = new Windows.Networking.BackgroundTransfer.BackgroundDownloader();
+                            var download = downloader.createDownload(uri, newFile);
+                            
+                            // Iniciar descarga real
+                            return download.startAsync().then(function () {
+                                return newFile; // Pasar el archivo listo
+                            });
+                        })
+                        .done(function (fileObj) {
+                            // CAMBIO DE ESTADO: LISTO PARA INSTALAR
+                            btnAction.innerText = "Instalar";
+                            btnAction.style.background = "#1ba1e2"; // Azul para resaltar la acción de abrir
+                            btnAction.disabled = false;
+                            
+                            // Reemplazamos el evento onclick para que ahora abra el instalador por defecto
+                            btnAction.onclick = function() {
+                                Windows.System.Launcher.launchFileAsync(fileObj).done(function (success) {
+                                    if (!success) {
+                                        mostrarToast("No se pudo abrir el instalador del sistema.");
+                                    }
+                                }, function(error) {
+                                    mostrarToast("Error al lanzar: " + error.message);
+                                });
+                            };
+                            
+                        }, function (error) {
+                            btnAction.innerText = "Error";
+                            btnAction.style.background = "#e51400"; // Rojo en caso de error
+                            mostrarToast("Error en la descarga: " + error.message);
+                        });
+                } catch (e) {
+                    mostrarToast("Error de sistema: " + e.message);
+                }
+            } 
+            // Lógica fallback por si abres el HTML en un navegador web normal
+            else {
+                var iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = app.url; 
+                document.body.appendChild(iframe);
+                
+                setTimeout(function() {
+                    if (document.body.contains(iframe)) {
+                        document.body.removeChild(iframe);
+                    }
+                    // En navegador, como no hay Launcher, simplemente indicamos que bajó
+                    btnAction.innerText = "Descargado";
+                    btnAction.style.background = "#228B22";
+                    btnAction.disabled = true;
+                }, 5000); 
+            }
+        };
+        
+        document.getElementById('app-download-view').classList.add("open");
+    }
+
+<<<<<<< HEAD
+=======
+    // MANEJO DE APPBARS (Click derecho o tap fuera)
+>>>>>>> 14e0322 (Actualizacion de CodornizStore: paquete firmado y funcional 1.0.0.1)
+    document.addEventListener("contextmenu", function(e){ 
+        e.preventDefault(); 
+        var ms = document.getElementById("metro-appbar-superior");
+        var mi = document.getElementById("metro-appbar-inferior");
+        if(ms && mi) {
+            ms.classList.toggle("appbar-activa"); 
+            mi.classList.toggle("appbar-activa"); 
+        }
+    });
+
+    document.addEventListener("click", function(e){ 
+        var s = document.getElementById("metro-appbar-superior");
+        var i = document.getElementById("metro-appbar-inferior");
+        if(s && i && !s.contains(e.target) && !i.contains(e.target)){ 
+            s.classList.remove("appbar-activa"); 
+            i.classList.remove("appbar-activa"); 
+        } 
+    });
+</script>
+
+<div id="metro-appbar-superior">
+    <div style="display:flex; flex-direction:row; gap:32px; padding:20px;">
+        <div onclick="irAlInicio()" style="cursor:pointer;">Inicio Store</div>
+        <div onclick="mostrarSeccionAplicaciones()" style="cursor:pointer;">Apps</div>
+    </div>
+</div>
+<div id="metro-appbar-inferior">
+    <div style="display:flex; flex-direction:row; gap:32px; padding:20px;">
+        <div onclick="mostrarSeccionDescargas()" style="cursor:pointer;">Descargas</div>
+        <div onclick="mostrarSeccionCuenta()" style="cursor:pointer;">Cuenta Oro</div>
+        <div onclick="mostrarSeccionWishlist()" style="cursor:pointer;">Wishlist</div>
+    </div>
+</div>
+<<<<<<< HEAD
+=======
+    <script>
+    // 1. LISTA COMPLETA DE APPS (Aquí puedes añadir más sin miedo a romper el código)
+    var catalogoApps = {
+        'Angry Birds Space': { pub: 'Rovio Entertainment', desc: 'Los pájaros espaciales se trasladan al espacio exterior.', icon: 'angrybirds.png', url: 'https://drive.google.com/file/d/1oStrLgIrknt95EcIkLwY_YiZbMsFHIUQ/view?usp=drive_link' },
+        'Fruit Ninja': { pub: 'Halfbrick Studios', desc: 'El clásico juego de rebanar sandías.', icon: 'fruitninja.png', url: 'https://drive.google.com/file/d/1q5qowDPr-Htm12JrrNK418Lzu_lQJNOL/view?usp=drive_link' },
+        'ProdigyMath': { pub: 'Prodigy Math Team', desc: 'Plataforma educativa de matemáticas.', icon: 'ProdigyMath_1.17.0.0_AnyCPU_Debug.png', url: 'https://drive.google.com/file/d/1Bm5y9laQEVD2EzH3ObBj5XBTEPVC6mo_/view?usp=drive_link' },
+        'newsXpresso Metro': { pub: 'newsXpresso', desc: 'Tu revista digital personal.', icon: 'newsxpresso.png', url: 'https://drive.google.com/file/d/1Zp11rRSB3clkymzKDPb2bKkCPnL4M_dx/view?usp=drive_link' },
+        'Opentracks': { pub: 'Opentracks Studio', desc: 'Reproductor de audio libre.', icon: 'mp3hubesopentracks.png', url: 'https://drive.google.com/file/d/1Cond9OlNdjPee0RdtALNhasntS8JZKXA/view?usp=drive_link' },
+        'wpapp': { pub: 'wpapp Team', desc: 'Sincronización de mosaicos clásicos.', icon: 'wpapp.png', url: 'https://drive.google.com/file/d/1rDJgRwSaZ1LdJg8sM2nrZlyxAIM1CCE3/view?usp=drive_link' },
+        'Evernote': { pub: 'Evernote Corp', desc: 'Toma notas y organiza ideas.', icon: 'evernote.png', url: 'https://drive.google.com/file/d/1D6TPEhleJFXa9n9JfnQ04vt2A-j2gLYv/view?usp=drive_link' },
+        'mytube': { pub: 'Ryken Studio', desc: 'Cliente de videos estilo Metro.', icon: 'mytube.png', url: 'https://drive.google.com/file/d/1EthmDqW2kcgDsaZ7EpPSdiB8Rv1tNTWC/view?usp=drive_link' },
+        'DrayMusic': { pub: 'DrayMusic Studio', desc: 'Reproductor y gestor musical.', icon: '1773704616_DrayMusic_1.0.0.0_AnyCPU.png', url: 'https://drive.google.com/file/d/1DJOGR0OaH9jP0jaGTQ8Y0VvgTfbj_Dvz/view?usp=drive_link' },
+        'Netflix': { pub: 'Netflix Inc', desc: 'Streaming en alta definición.', icon: 'netflix.png', url: 'https://drive.google.com/file/d/1895kZuRaM7CmUmNfuvnwwzTTTIAoIcb6/view?usp=drive_link' },
+        'Rowi': { pub: 'Hidden Pineapple', desc: 'Cliente de Twitter panorámico.', icon: 'rowi-150x150.png', url: 'https://drive.google.com/file/d/1-1leuVqfzwpCaIf7wDbCpNqyZ780Ot1o/view?usp=drive_link' },
+        'Nokia AppSocial': { pub: 'Nokia Corporation', desc: 'Recomendaciones de la comunidad.', icon: 'nokiaappsocial.png', url: 'https://drive.google.com/file/d/1LIDK37Jsnz8hnbelIWC-aWzAtXB3vMNB/view?usp=drive_link' },
+        'Koode Reader': { pub: 'Koode Team', desc: 'Lector de libros electrónicos.', icon: 'koodereader.png', url: 'https://drive.google.com/file/d/1e8QpSamGGLevpQBODUvPTNPIKbMNb3Fw/view?usp=drive_link' },
+        'El Tenedor': { pub: 'La Fourchette', desc: 'Guía gastronómica oficial.', icon: 'eltenedor.png', url: 'https://drive.google.com/file/d/1aHYx97Ug17RF8cNmBcderkRnA10zGzhA/view?usp=drive_link' },
+        'Rayman Jungle Run': { pub: 'Ubisoft', desc: 'Legendario héroe de plataformas.', icon: 'raymanjunglerun.png', url: 'https://drive.google.com/file/d/1mHxYD_VFBC7lI78mGY_BuHtYd7P7nzyh/view?usp=drive_link' },
+        'Cut The Rope': { pub: 'ZeptoLab UK', desc: 'Física para alimentar a Om Nom.', icon: 'CutTheRope.png', url: 'https://drive.google.com/file/d/1IeQRrxmj0jrgTDSGSaEjN2tCmd6o1Ky1/view?usp=drive_link' },
+        'Xurxo News': { pub: 'XunxoCorp', desc: 'Lector de noticias RSS.', icon: 'Xuxo.png', url: 'https://drive.google.com/file/d/1000ZWnzxWE-NCzKp87TQ_43xXmkW2qKz/view?usp=drive_link' },
+        'Fresh Paint': { pub: 'Microsoft Studios', desc: 'Lienzo de pintura digital.', icon: 'freshpaint.png', url: 'https://drive.google.com/file/d/1easaK47p8H1vAXQOvKWSSQkfGNS0pOfq/view?usp=drive_link' },
+        'RecipeKeeper': { pub: 'Recipe Keeper Team', desc: 'Organiza tus recetas familiares.', icon: 'recipekeeper.png', url: 'https://drive.google.com/file/d/1n6jz5gI76eR8Pf9aWblZwtMqaM908mN2/view?usp=drive_link' },
+        'Adobe Reader': { pub: 'Adobe Systems', desc: 'Visor de PDF oficial.', icon: 'metro_reader_small_logo.targetsize-256.png', url: 'https://drive.google.com/file/d/148Md224s8Jh_wHOFTihllvDtgyX1QOuD/view?usp=drive_link' },
+        'InsiderHub': { pub: 'Microsoft Insider', desc: 'Foros y compilaciones Insider.', icon: 'insiderhub.png', url: 'https://drive.google.com/file/d/1oZhHFJoZtujtljIVt2GwVUmJn5SWFufr/view?usp=drive_link' },
+        'WPCentral': { pub: 'WPCentral Team', desc: 'Noticias del ecosistema Windows.', icon: 'WPAPPCENTRAL.png', url: 'https://drive.google.com/file/d/1JnoKGiIaxYuFm9dn428G0ELkYOJSxxPb/view?usp=drive_link' }
+    };
+
+    // 2. FUNCIÓN ÚNICA (No rompe nada, solo busca en el catálogo)
+    function openAppDetails(nombreApp) {
+        var app = catalogoApps[nombreApp];
+        var pubBox = document.getElementById('view-app-pub');
+        var descBox = document.getElementById('view-app-desc');
+        var iconBox = document.getElementById('view-app-icon');
+        var btnAction = document.getElementById('view-download-action');
+        var urlDescarga = app ? app.url : "";
+
+        if (app) {
+            if (pubBox) pubBox.innerText = app.pub;
+            if (descBox) descBox.innerText = app.desc;
+            if (iconBox) iconBox.style.backgroundImage = "url('images/iconos_extraidos/" + app.icon + "')";
+        } else {
+            if (pubBox) pubBox.innerText = 'CodornizCorp';
+            if (descBox) descBox.innerText = 'La codorniz no ha escrito una descripcion aun.';
+            if (iconBox) iconBox.style.backgroundImage = "url('images/codorniz.png')";
+        }
+
+        // Configuración botón de descarga
+        if (btnAction) {
+            btnAction.onclick = function() {
+                if (urlDescarga !== "") {
+                    window.location.href = "ms-appinstaller:?source=" + encodeURIComponent(urlDescarga);
+                } else {
+                    alert("App en mantenimiento.");
+                }
+            };
+        }
+        document.getElementById('app-download-view').classList.add("open");
+    }
+</script>  
+</script>
+    <div id="metro-appbar-superior"><div style="display:flex; flex-direction:row; gap:32px; padding:20px;"><div onclick="irAlInicio()" style="cursor:pointer;">Inicio Store</div><div onclick="mostrarSeccionAplicaciones()" style="cursor:pointer;">Apps</div></div></div>
+    <div id="metro-appbar-inferior"><div style="display:flex; flex-direction:row; gap:32px; padding:20px;"><div onclick="mostrarSeccionDescargas()" style="cursor:pointer;">Descargas</div><div onclick="mostrarSeccionCuenta()" style="cursor:pointer;">Cuenta Oro</div><div onclick="mostrarSeccionWishlist()" style="cursor:pointer;">Wishlist</div></div></div>
+    <style>
+        #metro-appbar-superior { position: fixed; top: -110px; left: 0; width: 100%; height: 95px; background: rgba(28, 28, 28, 0.95); transition: top 0.2s; z-index: 99998; } #metro-appbar-superior.appbar-activa { top: 0; }
+        #metro-appbar-inferior { position: fixed; bottom: -130px; left: 0; width: 100%; height: 95px; background: rgba(28, 28, 28, 0.95); transition: bottom 0.2s; z-index: 99998; } #metro-appbar-inferior.appbar-activa { bottom: 0; }
+    </style>
+    <script>
+        document.addEventListener("contextmenu", function(e){ e.preventDefault(); document.getElementById("metro-appbar-superior").classList.toggle("appbar-activa"); document.getElementById("metro-appbar-inferior").classList.toggle("appbar-activa"); });
+        document.addEventListener("click", function(e){ if(!document.getElementById("metro-appbar-superior").contains(e.target) && !document.getElementById("metro-appbar-inferior").contains(e.target)){ document.getElementById("metro-appbar-superior").classList.remove("appbar-activa"); document.getElementById("metro-appbar-inferior").classList.remove("appbar-activa"); } });
+    </script>
+>>>>>>> e2cf9a6906aefa00b0aca3102c816800f6e97bb0
+=======
+
+>>>>>>> 14e0322 (Actualizacion de CodornizStore: paquete firmado y funcional 1.0.0.1)
+</body>
+</html>
